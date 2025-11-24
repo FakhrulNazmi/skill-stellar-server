@@ -1,5 +1,5 @@
 export class CreateUserDto {
-    id: number;
+    id: string;
     type: string;
     status_id: string;
     name: string;

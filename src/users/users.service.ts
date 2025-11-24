@@ -48,14 +48,14 @@ export class UsersService {
   }
 
   // READ ONE
-  async findOne(id: number) {
+  async findOne(id: string) {
     return await this.usersRepository.findOne({
       where: { id },
     });
   }
 
   // UPDATE
-  async update(id: number, updateUserDto: UpdateUserDto) {
+  async update(id: string, updateUserDto: UpdateUserDto) {
     await this.usersRepository.update(id, updateUserDto);
     return this.findOne(id);
   }
