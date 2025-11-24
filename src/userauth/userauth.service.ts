@@ -23,7 +23,7 @@ export class UserauthService {
       throw new ConflictException('Username already exists');
     }
 
-    const password_hash = await bcrypt.hash(dto.password, 10);
+    const password_hash = await bcrypt.hash(dto.password_hash, 10);
 
     const userAuth = this.userAuthRepository.create({
       user_id: dto.user_id,
@@ -50,13 +50,26 @@ export class UserauthService {
   async update(id: string, updateDto: UpdateUserDto): Promise<UserAuth> {
     const user = await this.findOneById(id);
 
-    // Hash password if it exists in update
+    console.log('Incoming updateDto:', updateDto);
+
+    // 1. If password is included, hash it
     if (updateDto.password_hash) {
-      updateDto.password = await bcrypt.hash(updateDto.password_hash, 10);
-      delete updateDto.password;
+      console.log('Password BEFORE hash:', updateDto.password_hash);
+
+      const hashedPassword = await bcrypt.hash(updateDto.password_hash, 10);
+      
+      console.log('Password AFTER hash:', hashedPassword);
+
+      user.password_hash = hashedPassword;   // << IMPORTANT
+      delete updateDto.password_hash;        // remove plain text
     }
 
+    // 2. Assign all other fields
     Object.assign(user, updateDto);
+
+    console.log('Final user to save:', user);
+
     return this.userAuthRepository.save(user);
   }
+
 }

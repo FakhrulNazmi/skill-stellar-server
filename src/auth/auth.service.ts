@@ -19,12 +19,12 @@ export class AuthService {
     if (existing) throw new ConflictException('Username already exists');
 
     // Hash password
-    const password_hash = await bcrypt.hash(dto.password, 10);
+    const password_hash = await bcrypt.hash(dto.password_hash, 10);
 
     // Create userauth record
     const userAuth = await this.userauthService.createUserAuth({
       ...dto,
-      password: dto.password // UserauthService will hash again OR adjust
+      password_hash: dto.password_hash // UserauthService will hash again OR adjust
     });
 
     const { password_hash: _, ...result } = userAuth;
@@ -40,6 +40,7 @@ export class AuthService {
   //login
   async login(username: string, password: string) {
     const userAuth = await this.userauthService.findOne(username);
+    if (username === "" || password === "") throw new ConflictException("Username or Password cannot be null!")
     if (!userAuth) throw new UnauthorizedException('Invalid username/password');
 
     const isValid = await bcrypt.compare(password, userAuth.password_hash);

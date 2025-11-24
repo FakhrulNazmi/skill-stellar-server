@@ -1,8 +1,8 @@
 import { Controller, Post, Body, Patch, Param } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserAuthDto } from '../userauth/dto/create-userauth.dto';
-import { UpdateUserDto } from 'src/userauth/dto/update-userauth.dto';
 import { LoginDto } from './dto/login.dto';
+import { UpdateUserDto } from 'src/userauth/dto/update-userauth.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -20,6 +20,6 @@ export class AuthController {
 
   @Post('login')
   async login(@Body() dto: LoginDto) {
-    return this.authService.login(dto.username, dto.password);
+    return this.authService.login(dto.username, dto.password_hash);
   }
 }
